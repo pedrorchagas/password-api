@@ -1,8 +1,7 @@
-var express = require('express');
-var router = express.Router();
-var characters_service = require('../services/characters')
+const characters_service = require('../services/characters');
+const error_helper = require('../helpers/error_helper');
 
-router.get('/', function(req, res, next) {
+async function generatePassword(req) {
     const pattern = (typeof req.query.pattern === 'string') ? req.query.pattern : false;
     const length = isNaN(parseInt(req.query.length)) ? false : parseInt(req.query.length);
     const min = isNaN(parseInt(req.query.min)) ? 5 : parseInt(req.query.min);
@@ -16,12 +15,10 @@ router.get('/', function(req, res, next) {
 
     // tratamento de certos erros que pode acontecer
     if (min > max) {
-        res.status(400).send({error: 'min > max'});
-        return;
+        throw error_helper.errorPattern(error_helper.ConstantsErrors.maxLessThanMin, 400);
     }
     if (max > 300) {
-        res.status(400).send({error: 'tamanho máximo excedeu o limite de 300'});
-        return;
+        throw error_helper,error_helper.errorPattern(error_helper.ConstantsErrors.limitExceeded, 400);
     }
 
     if (pattern) {
@@ -49,8 +46,7 @@ router.get('/', function(req, res, next) {
                     break;
                 }
                 default: {
-                    res.status(400).send({error: 'pattern não valida'})
-                    return;
+                    throw new Error({error: 'pattern não valida'})
                 }
             }
 
@@ -97,10 +93,10 @@ router.get('/', function(req, res, next) {
     passwordInfo.pattern = pattern;
     passwordInfo.prefix = prefix;
     passwordInfo.suffix = suffix;
+    
+    return {password: password, passwordInfo: passwordInfo};
+}
 
-
-    // envio da senha e de outras informações
-    res.status(200).send({password: password, passwordInfo: passwordInfo})
-});
-
-module.exports = router;
+module.exports = {
+    generatePassword,
+}
