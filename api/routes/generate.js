@@ -7,8 +7,7 @@ router.get('/', async function(req, res, next) {
         let password = await passwordController.generatePassword(req)
         res.status(200).send(password)
     } catch (error) {
-        console.log(error)
-        res.status(error.code).send(error.message)
+        res.status(error.code || 500 ).send({error: error.message || error})
     }
 });
 

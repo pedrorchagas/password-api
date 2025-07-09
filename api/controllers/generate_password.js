@@ -1,7 +1,7 @@
 const characters_service = require('../services/characters');
 const error_helper = require('../helpers/error_helper');
 
-async function generatePassword(req) {
+async function generatePassword(res) {
     const pattern = (typeof req.query.pattern === 'string') ? req.query.pattern : false;
     const length = isNaN(parseInt(req.query.length)) ? false : parseInt(req.query.length);
     const min = isNaN(parseInt(req.query.min)) ? 5 : parseInt(req.query.min);
@@ -15,10 +15,10 @@ async function generatePassword(req) {
 
     // tratamento de certos erros que pode acontecer
     if (min > max) {
-        throw error_helper.errorPattern(error_helper.ConstantsErrors.maxLessThanMin, 400);
+        throw error_helper.ConstantsErrors.maxLessThanMin;
     }
     if (max > 300) {
-        throw error_helper,error_helper.errorPattern(error_helper.ConstantsErrors.limitExceeded, 400);
+        throw error_helper.errorPattern(error_helper.ConstantsErrors.limitExceeded, 400);
     }
 
     if (pattern) {

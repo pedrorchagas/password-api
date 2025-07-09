@@ -1,14 +1,8 @@
 const ConstantsErrors = {
-    maxLessThanMin: 'O máximo é menor que o mínimo',
-    limitExceeded: 'O valor máximo é maior que 300'
-}
-
-async function errorPattern(message, code) {
-    let error = new Error({message: message, code: code})
-    return error;
+    maxLessThanMin: {message: 'O máximo é menor que o mínimo', code: 400},
+    limitExceeded: {message: 'O valor máximo é maior que 300', code: 400}
 }
 
 module.exports = {
-    errorPattern,
     ConstantsErrors,
 }
