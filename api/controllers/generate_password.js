@@ -1,27 +1,28 @@
-var express = require('express');
-var router = express.Router();
-var characters_service = require('../services/characters')
+const characters_service = require('../services/characters');
+const error_helper = require('../helpers/error_helper');
 
-router.get('/', function(req, res, next) {
-    const pattern = (typeof req.query.pattern === 'string') ? req.query.pattern : false;
-    const length = isNaN(parseInt(req.query.length)) ? false : parseInt(req.query.length);
-    const min = isNaN(parseInt(req.query.min)) ? 5 : parseInt(req.query.min);
-    const max = isNaN(parseInt(req.query.max)) ? 15 : parseInt(req.query.max);
-    const prefix = (typeof req.query.prefix === 'string') ? req.query.prefix : false;
-    const suffix = (typeof req.query.suffix === 'string') ? req.query.suffix : false;
+async function generatePassword(req) {
+    let pattern = (typeof req.query.pattern === 'string') ? req.query.pattern : false;
+    let length = isNaN(parseInt(req.query.length)) ? false : parseInt(req.query.length);
+    let min = isNaN(parseInt(req.query.min)) ? 5 : parseInt(req.query.min);
+    let max = isNaN(parseInt(req.query.max)) ? 15 : parseInt(req.query.max);
+    let prefix = (typeof req.query.prefix === 'string') ? req.query.prefix : false;
+    let suffix = (typeof req.query.suffix === 'string') ? req.query.suffix : false;
+    let upper = isNaN(parseInt(req.query.upper)) ? false : true;
+    let down = isNaN(parseInt(req.query.down)) ? false : true;
 
+    console.log((typeof req.query.down === 'number' && req.query.down))
+    console.log(typeof req.query.down)
     let password = '';
     let passwordSize = 0;
     let passwordInfo = {};
 
     // tratamento de certos erros que pode acontecer
     if (min > max) {
-        res.status(400).send({error: 'min > max'});
-        return;
+        throw error_helper.ConstantsErrors.maxLessThanMin;
     }
     if (max > 300) {
-        res.status(400).send({error: 'tamanho máximo excedeu o limite de 300'});
-        return;
+        throw error_helper.errorPattern(error_helper.ConstantsErrors.limitExceeded, 400);
     }
 
     if (pattern) {
@@ -30,16 +31,28 @@ router.get('/', function(req, res, next) {
 
         for(let i = 0; i < passwordSize; i++){
             let charType = pattern[i];
+            let upper = false;
+            let down = false;
             
             // transforma as letras nos nomes de cada lista
             switch(charType){
+                case 'A':
+                case 'a': {
+                    charType = 'alphabet';
+                    break;
+                }
                 case 'N':
                 case 'n': {
                     charType = 'numbers';
                     break;
                 }
-                case 'L':
+                case 'L': {
+                    upper = true;
+                    charType = 'alphabet';
+                    break;
+                }
                 case 'l': {
+                    down = true;
                     charType = 'alphabet';
                     break;
                 }
@@ -49,12 +62,11 @@ router.get('/', function(req, res, next) {
                     break;
                 }
                 default: {
-                    res.status(400).send({error: 'pattern não valida'})
-                    return;
+                    throw error_helper.ConstantsErrors.invalidPattern;
                 }
             }
 
-            let char = characters_service.getRamdomCharacterFromList(charType);
+            let char = characters_service.getRamdomCharacterFromList(charType, upper, down);
             password += char; 
 
         }
@@ -75,7 +87,7 @@ router.get('/', function(req, res, next) {
 
         // aqui ele cria a senha baseado no tamanho da senha = passwordSize
         for(let i = 0; i <= passwordSize; i++) {
-            let char = characters_service.getRandomCharacter();
+            let char = characters_service.getRandomCharacter(upper, down);
             password += char;
         }
 
@@ -97,10 +109,12 @@ router.get('/', function(req, res, next) {
     passwordInfo.pattern = pattern;
     passwordInfo.prefix = prefix;
     passwordInfo.suffix = suffix;
+    passwordInfo.upper = upper;
+    passwordInfo.down = down;
+    
+    return {password: password, passwordInfo: passwordInfo};
+}
 
-
-    // envio da senha e de outras informações
-    res.status(200).send({password: password, passwordInfo: passwordInfo})
-});
-
-module.exports = router;
+module.exports = {
+    generatePassword,
+}
