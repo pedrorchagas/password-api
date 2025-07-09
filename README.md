@@ -10,7 +10,9 @@ Enviando um método `GET` para o endpoint `https://password-api.azurewebsites.ne
     > ATENÇÃO, quando é definido uma pattern, o tamanho da senha fica fixo seguindo a pattern definida.
 - `prefix`: Adiciona um prefixo na senha. Ex. `/generate?prefix=twitch&pattern=LLLL` irá retornar uma senha como: `twitchCPYM`
 - `suffix`: Adiciona um sufixo na senha. Ex. `/generate?suffix=youtube&pattern=NNN` irá retornar uma senha como: `405youtube`
-
+- `uppper`: Configura se as letras serão maiúsculas
+- `down`: Configura se as letras serão minúsculas 
+    > Por padrão os valores de `Upper` e `Down` são definidos para 0, caso os dois seram definidos para 1 será defindo como aleatório.
 ## Password info
 Retorna o que foi utilizado na formação da senha.
 - `lenght`: Tamanho da senha
