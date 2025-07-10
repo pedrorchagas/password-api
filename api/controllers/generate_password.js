@@ -4,7 +4,7 @@ const error_helper = require('../helpers/error_helper');
 async function generatePassword(req) {
     let pattern = (typeof req.query.pattern === 'string') ? req.query.pattern : false;
     let length = isNaN(parseInt(req.query.length)) ? false : parseInt(req.query.length);
-    let min = isNaN(parseInt(req.query.min)) ? 5 : parseInt(req.query.min);
+    let min = isNaN(parseInt(req.query.min)) ? 7 : parseInt(req.query.min);
     let max = isNaN(parseInt(req.query.max)) ? 15 : parseInt(req.query.max);
     let prefix = (typeof req.query.prefix === 'string') ? req.query.prefix : false;
     let suffix = (typeof req.query.suffix === 'string') ? req.query.suffix : false;
@@ -22,7 +22,10 @@ async function generatePassword(req) {
         throw error_helper.ConstantsErrors.maxLessThanMin;
     }
     if (max > 300) {
-        throw error_helper.errorPattern(error_helper.ConstantsErrors.limitExceeded, 400);
+        throw error_helper.ConstantsErrors.limitExceeded;
+    }
+    if (min < 7) {
+        throw error_helper.ConstantsErrors.minLimit;
     }
 
     if (pattern) {
