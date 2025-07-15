@@ -9,7 +9,6 @@ async function createConnection() {
 
     try {
         await sequelize.authenticate();
-        await sequelize.sync();
         console.log('Conexão foi estabelecida com sucesso!')
         return sequelize
     } catch(error) {
