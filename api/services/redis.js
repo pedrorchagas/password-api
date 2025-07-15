@@ -16,10 +16,11 @@ async function checkPassword(password) {
     }
 }
 
-async function savePassword(password, passwordInfo) {
+async function savePassword(password) {
     try {
         await client.connect();
         await client.set(password, 1);
+        await client.expire(password, 86400)
     } catch(error) {
         console.log('savePassword', error)
     } finally {

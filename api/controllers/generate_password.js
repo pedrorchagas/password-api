@@ -1,6 +1,6 @@
 const characters_service = require('../services/characters');
 const error_helper = require('../helpers/error_helper');
-const redis_service = require('../services/redis')
+const password_service = require('../services/password')
 
 async function generatePassword(req) {
     let pattern = (typeof req.query.pattern === 'string') ? req.query.pattern : false;
@@ -25,10 +25,11 @@ async function generatePassword(req) {
             if (min > max) {
                 throw error_helper.ConstantsErrors.maxLessThanMin;
             }
-            if (max > 300) {
+            if (max > 300 || pattern.length > 300) {
                 throw error_helper.ConstantsErrors.limitExceeded;
             }
-            if (min < 7) {
+
+            if (min < 5 || pattern.length < 5) {
                 throw error_helper.ConstantsErrors.minLimit;
             }
 
@@ -120,12 +121,12 @@ async function generatePassword(req) {
             passwordInfo.down = down;
             
             attempts +=1
-        } while(await redis_service.checkPassword(password)); 
-        await redis_service.savePassword(password, passwordInfo);
+        } while(await password_service.checkPassword(password)); 
+        await password_service.savePassword(password);
         return {password: password, passwordInfo: passwordInfo};
 
     } catch(error) {
-        console.log('aaaa', error)
+        console.log(error)
         throw error;
     } 
 }
