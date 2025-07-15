@@ -20,6 +20,6 @@ module.exports = (sequelize, DataTypes) => {
             timestamps: false,
         }
     )
-
+    sequelize.sync();
     return Password;
 }
