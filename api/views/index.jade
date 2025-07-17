@@ -2,4 +2,70 @@ extends layout
 
 block content
   h1= title
-  p Welcome to #{title}
+  a(href="https://github.com/pedrorchagas/password-api") Github 
+  p Uma simples API de geração de senhas
+  div
+    h2 Como utilizar:
+    p Para utilizar a API é muito simples, basta enviar uma requisição GET para o endpoint 
+    pre /generate
+    a(href="/generate") Clique aqui! 
+    h3 Parametros:
+    p A API possui parâmetros que podem ser usados para melhorar ou customizar a geração de senhas.
+    ul 
+      li 
+        p Para definir o tamanho máximo da senha:
+        pre ?max=20
+        p Limite máximo da senha é 300
+      li 
+        p  Para definir o tamanho mínimo da senha:
+        pre ?min=10 
+        p Limite mínimo da senha é 7
+      li 
+        p Para definir um padrão para a senha:
+        pre ?pattern=AALLNNSS
+        ul
+          li
+            pre A 
+            p Para letras do alfabeto independete se é maiúscula ou minúscula
+          li
+            pre L ou l 
+            p Para letras do alfabeto, se for maíuscula será maiúscula e mesma coisa para a minúscula 
+          li
+            pre N
+            p Para números
+          li
+            pre S 
+            p Para caracteres especiais
+          
+      li 
+        p Para definir um prefixo:
+        pre ?prefix=youtube 
+      li 
+        p Para definir um suffixo:
+        pre ?suffix=twitch
+      li 
+        p Para definir se as letras serão maiúsculas:
+        pre ?upper=1
+      li 
+        p Para definir se as letras serão minúsculas:
+        pre ?down=1
+  div
+    h2 Como funciona:
+    p Basicamente temos três listas contendo os caracteres que podem ser usados nas senhas, são eles: Alfabeto, Números e Especiais. 
+    p Os parâmetros definem como será o comportamento da API para escolher dentro dessas três listas.
+    p Também possui um banco de dados (redis ou sql) para garantir que a senha gerada não foi distribuida para outra requisição (claro que dentro de um certo tempo)
+
+  div
+    h2 Como rodar localmente: 
+    p Para rodar a API localmente, basta fazer um clone do repositório da API no Github: 
+    a(href="https://github.com/pedrorchagas/password-api") https://github.com/pedrorchagas/password-api
+    h3 Use os comandos:
+    ol 
+      li Rode o comando para clonar o repositório: 
+        pre git clone https://github.com/pedrorchagas/password-api
+      li Instale as dependências:
+        pre npm install
+      li Configure o .env com o tipo de armazenamento desejado (Escolha o sqlite para ser mais fácil)
+        pre cp .env.copy .env
+      li Use o comando para rodar localmente 
+        pre npm run local
