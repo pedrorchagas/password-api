@@ -1,0 +1,24 @@
+body {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    list-style-type: none;
+    color: azure;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+
+    background-color: black;
+}
+
+pre {
+    background-color: rgb(44, 44, 44);
+    padding: 5px;
+    border-radius: 5px;
+}
+
+div {
+    width: 75%;
+}
